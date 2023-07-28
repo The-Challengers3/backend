@@ -8,6 +8,10 @@ const authRouter = require('./auth/routes')
 const restRouter = require('./routes/restaurants-route');
 const activityRouter = require('./routes/activity-route');
 const hotelRouter = require('./routes/hotel-route');
+const favsRouter = require('./routes/favorite-route');
+const bookingRouter = require('./routes/booking-route');
+const reelRouter = require('./routes/reel-route');
+const commentRouter = require('./routes/comment-route');
 
 // const errorHandler = require('./error-handlers/500.js');
 // const notFound = require('./error-handlers/404.js');
@@ -25,9 +29,13 @@ app.use(express.urlencoded({ extended: true }));
 app.use(restRouter);
 app.use(activityRouter);
 app.use(hotelRouter);
+app.use(favsRouter);
+app.use(bookingRouter);
+app.use(reelRouter);
+app.use(commentRouter);
 app.use(authRouter);
 
-app.get("/", (req,res)=>{
+app.get("/", (req, res) => {
     res.status(200).send('Welcome to the API!')
 });
 

@@ -17,9 +17,9 @@ const commentModel = require('./comments/comments-model.js');
 
 const Collection = require('./collection.js');
 
-const DATABASE_URL = process.env.DATABASE_URL || 'sqlite:memory;' ; 
+const DATABASE_URL = process.env.DATABASE_URL || 'sqlite:memory;';
 
-const sequelize = new Sequelize(DATABASE_URL,{logging: false});
+const sequelize = new Sequelize(DATABASE_URL, { logging: false });
 
 const user = userModel(sequelize, DataTypes);
 
@@ -183,7 +183,7 @@ module.exports = {
   activity: activityCollection,
   reel: reelCollection,
   comment: commentCollection,
-  favs:favsCollection,
+  favs: favsCollection,
   booking: bookingCollection,
   users: user,
 }
