@@ -5,10 +5,12 @@ const cors = require("cors");
 const morgan = require('morgan');
 const app = express();
 const authRouter = require('./auth/routes')
-const restRouter = require('./routes/restRoute')
-const favRouter = require('./routes/favRoute')
-const errorHandler = require('./error-handlers/500.js');
-const notFound = require('./error-handlers/404.js');
+const restRouter = require('./routes/restaurants-route');
+const activityRouter = require('./routes/activity-route');
+const hotelRouter = require('./routes/hotel-route');
+
+// const errorHandler = require('./error-handlers/500.js');
+// const notFound = require('./error-handlers/404.js');
 app.use(cors());
 app.use(express.json());
 
@@ -21,7 +23,8 @@ app.use(express.urlencoded({ extended: true }));
 
 // Routes
 app.use(restRouter);
-app.use(favRouter);
+app.use(activityRouter);
+app.use(hotelRouter);
 app.use(authRouter);
 
 app.get("/", (req,res)=>{
@@ -29,8 +32,8 @@ app.get("/", (req,res)=>{
 });
 
 // Catchalls
-app.use('*', notFound);
-app.use(errorHandler);
+// app.use('*', notFound);
+// app.use(errorHandler);
 
 module.exports = {
     app: app,
