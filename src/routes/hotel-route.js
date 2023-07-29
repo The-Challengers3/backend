@@ -7,12 +7,12 @@ const { userCollection } = require("../models/index");
 const bearerAuth = require("../auth/middleware/bearer");
 const acl = require("../auth/middleware/acl");
 
-restRouter.get("/hotel", bearerAuth, acl('read'), gethotel);
-restRouter.get("/hotel/:id", bearerAuth, acl('read'), getOnehotel);
-restRouter.post("/hotel", bearerAuth, acl('create'), createhotel);
-restRouter.put("/hotel/:id", bearerAuth, acl('update'), updatehotel);
-restRouter.delete("/hotel/:id", bearerAuth, acl('delete'), deletehotel);
-restRouter.get("/ownerHotel/:id", bearerAuth, acl('read'), getUserHotel);
+restRouter.get("/hotel", bearerAuth, acl('readUser'), gethotel);
+restRouter.get("/hotel/:id", bearerAuth, acl('readUser'), getOnehotel);
+restRouter.post("/hotel", bearerAuth, acl('createOwner'), createhotel);
+//restRouter.put("/hotel/:id", bearerAuth, acl('update'), updatehotel);
+//restRouter.delete("/hotel/:id", bearerAuth, acl('delete'), deletehotel);
+restRouter.get("/ownerHotel/:id", bearerAuth, acl('readOwner'), getUserHotel);
 
 async function gethotel(req, res) {
   let hotelRecord = await hotel.get();
@@ -25,6 +25,8 @@ async function getOnehotel(req, res) {
 }
 async function createhotel(req, res) {
   let hotelData = req.body;
+  hotelData.ownerId = req.user.id; 
+
   let hotelRecord = await hotel.create(hotelData);
   res.status(201).json(hotelRecord);
 }

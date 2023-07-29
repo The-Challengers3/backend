@@ -7,12 +7,12 @@ const { userCollection } = require("../models/index");
 const bearerAuth = require("../auth/middleware/bearer");
 const acl = require("../auth/middleware/acl");
 
-activityRouter.get("/activity", bearerAuth, acl('read'), getactivity);
-activityRouter.get("/activity/:id", bearerAuth, acl('read'), getOneactivity);
-activityRouter.post("/activity", bearerAuth, acl('create'), createactivity);
-activityRouter.put("/activity/:id", bearerAuth, acl('update'), updateactivity);
-activityRouter.delete("/activity/:id", bearerAuth, acl('delete'), deleteactivity);
-activityRouter.get("/owneractivity/:id", bearerAuth, acl('read'), getUseractivity);
+activityRouter.get("/activity", bearerAuth, acl('readUser'), getactivity);
+activityRouter.get("/activity/:id", bearerAuth, acl('readUser'), getOneactivity);
+activityRouter.post("/activity", bearerAuth, acl('createOwner'), createactivity);
+//activityRouter.put("/activity/:id", bearerAuth, acl('updateOwner'), updateactivity);
+//activityRouter.delete("/activity/:id", bearerAuth, acl('delete'), deleteactivity);
+activityRouter.get("/owneractivity/:id", bearerAuth, acl('readOwner'), getUseractivity);
 
 async function getactivity(req, res) {
   let activityRecord = await activity.get();
@@ -25,6 +25,8 @@ async function getOneactivity(req, res) {
 }
 async function createactivity(req, res) {
   let activityData = req.body;
+  activityData.ownerId = req.user.id; 
+
   let activityRecord = await activity.create(activityData);
   res.status(201).json(activityRecord);
 }
