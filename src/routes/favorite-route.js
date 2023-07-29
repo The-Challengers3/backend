@@ -7,9 +7,9 @@ const { userCollection } = require("../models/index");
 const bearerAuth = require("../auth/middleware/bearer");
 const acl = require("../auth/middleware/acl");
 
-favsRouter.get("/favorite/:id", bearerAuth, acl('read'), getfavorite);
-favsRouter.post("/favorite", bearerAuth, acl('read'), addfavorite);
-favsRouter.delete("/favorite/:id", bearerAuth, acl('read'), deletefavorite);
+favsRouter.get("/favorite/:id", bearerAuth, acl('readUser'), getfavorite);
+favsRouter.post("/favorite", bearerAuth, acl('createUser'), addfavorite);
+favsRouter.delete("/favorite/:id", bearerAuth, acl('deleteUser'), deletefavorite);
 
 async function getfavorite(req, res) {
     let id = parseInt(req.params.id);
@@ -19,6 +19,8 @@ async function getfavorite(req, res) {
 
 async function addfavorite(req, res) {
     let favsData = req.body;
+    favsData.userId = req.user.id; 
+
     let favsRecord = await favs.create(favsData);
     res.status(201).json(favsRecord);
 }

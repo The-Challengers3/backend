@@ -6,9 +6,9 @@ const { comment, reel } = require("../models/index");
 const bearerAuth = require("../auth/middleware/bearer");
 const acl = require("../auth/middleware/acl");
 
-commentRouter.get("/comments/:id", bearerAuth, acl('read'), getAllcomments);
-commentRouter.post("/comments", bearerAuth, acl('read'), addcomments);
-commentRouter.delete("/comments/:id", bearerAuth, acl('read'), deletecomments);
+commentRouter.get("/comments/:id", bearerAuth, acl('readUser'), getAllcomments);
+commentRouter.post("/comments", bearerAuth, acl('createUser'), addcomments);
+//commentRouter.delete("/comments/:id", bearerAuth, acl('deleteUser'), deletecomments);
 
 async function getAllcomments(req, res) {
     let id = parseInt(req.params.id);
@@ -18,6 +18,8 @@ async function getAllcomments(req, res) {
 
 async function addcomments(req, res) {
     let commentData = req.body;
+    commentData.userId = req.user.id; 
+
     let commentRecord = await comment.create(commentData);
     res.status(201).json(commentRecord);
 }

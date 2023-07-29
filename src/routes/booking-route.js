@@ -7,12 +7,12 @@ const { userCollection } = require("../models/index");
 const bearerAuth = require("../auth/middleware/bearer");
 const acl = require("../auth/middleware/acl");
 
-bookingRouter.get("/bookingRest/:id", bearerAuth, acl('read'), getbookingRest);
-bookingRouter.get("/bookingHotel/:id", bearerAuth, acl('read'), getbookingHotel);
-bookingRouter.get("/bookingActivity/:id", bearerAuth, acl('read'), getbookingActivity);
-bookingRouter.get("/bookings/:id", bearerAuth, acl('read'), getbookings);
-bookingRouter.post("/booking", bearerAuth, acl('read'), addbooking);
-bookingRouter.delete("/booking/:id", bearerAuth, acl('read'), deletebooking);
+bookingRouter.get("/bookingRest/:id", bearerAuth, acl('readOwner'), getbookingRest);
+bookingRouter.get("/bookingHotel/:id", bearerAuth, acl('readOwner'), getbookingHotel);
+bookingRouter.get("/bookingActivity/:id", bearerAuth, acl('readOwner'), getbookingActivity);
+bookingRouter.get("/bookings/:id", bearerAuth, acl('readUser'), getbookings);
+bookingRouter.post("/booking", bearerAuth, acl('createUser'), addbooking);
+//bookingRouter.delete("/booking/:id", bearerAuth, acl('deleteUser'), deletebooking);
 
 async function getbookingRest(req, res) {
     let id = parseInt(req.params.id);
@@ -40,6 +40,8 @@ async function getbookings(req, res) {
 
 async function addbooking(req, res) {
     let bookingData = req.body;
+    bookingData.userId = req.user.id; 
+
     let bookingRecord = await booking.create(bookingData);
     res.status(201).json(bookingRecord);
 }
