@@ -1,5 +1,7 @@
 const express = require("express");
 const restRouter = express.Router();
+const path = require("path");
+
 
 const { restaurant } = require("../models/index");
 const { userCollection } = require("../models/index");
@@ -11,11 +13,14 @@ restRouter.get("/restaurants", bearerAuth, acl('readUser'), getrestaurant);
 restRouter.get("/restaurants/:id", bearerAuth, acl('readUser'), getOnerestaurant);
 restRouter.post("/restaurants", bearerAuth, acl('createOwner'), createrestaurant);
 //restRouter.put("/restaurants/:id", bearerAuth, acl('update'), updaterestaurant);
-//restRouter.delete("/restaurants/:id", bearerAuth, acl('delete'), deleterestaurant);
+
+restRouter.delete("/restaurants/:id", bearerAuth, acl('delete'), deleterestaurant);
+
 restRouter.get("/ownerRest/:id", bearerAuth, acl('readOwner'), getUserRest);
 
 async function getrestaurant(req, res) {
   let restaurantRecord = await restaurant.get();
+  // res.sendFile(path.join(__dirname, '..', 'public', 'client.html'));
   res.status(200).json(restaurantRecord);
 }
 async function getOnerestaurant(req, res) {
@@ -38,9 +43,11 @@ async function updaterestaurant(req, res) {
   res.status(201).json(restaurantRecord);
 }
 async function deleterestaurant(req, res) {
+
   let id = parseInt(req.params.id);
   let restaurantRecord = await restaurant.delete(id);
   res.status(204).json(restaurantRecord);
+  
 }
 
 async function getUserRest(req, res) {
