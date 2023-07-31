@@ -18,7 +18,7 @@ async function getAllcomments(req, res) {
 
 async function addcomments(req, res) {
     let commentData = req.body;
-    commentData.userId = req.user.id; 
+    commentData.userId = req.user.id;
 
     let commentRecord = await comment.create(commentData);
     res.status(201).json(commentRecord);
