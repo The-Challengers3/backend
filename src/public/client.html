@@ -1,0 +1,69 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>Client View - Booking System</title>
+  </head>
+  <body>
+    <h1>Client View - Booking System</h1>
+
+    <div>
+      <label>Date:</label>
+      <input type="date" id="dateInput" />
+      <button onclick="bookService()">Book</button>
+
+    </div>
+<div id="amro">
+
+</div>
+    <ul id="notificationsList"></ul>
+    <ul id="bookingsList"></ul>
+
+    <script src="/socket.io/socket.io.js"></script>
+    <script>
+      const socket = io();
+
+      // Join as a client
+      socket.on("connect", () => {
+        socket.emit("joinRoom", "booking-room", "client");
+      });
+
+      // Function to book a service
+      function bookService() {
+        const dateInput = document.getElementById("dateInput");
+        const date = dateInput.value;
+        const booking = { date };
+        socket.emit("booking", "booking-room", booking);
+      }
+
+      // Handle booking confirmed
+      socket.on("bookingConfirmed", (bookingId) => {
+        // const bookingItem = document.querySelector(
+        //   `li[data-booking-id="${bookingId}"]`
+        // );
+
+        // if (bookingItem) {
+        //   bookingItem.innerText += " - Confirmed";
+        // }
+
+        const text = document.createElement("p");
+        text.innerText = `has been confirmed${bookingId}`
+        const perant = document.getElementById("amro");
+        perant.appendChild(text);
+        console.log("has been confirmed",bookingId);
+      });
+
+      // Handle new booking
+      socket.on("newBooking", (booking) => {
+        const notificationsList = document.getElementById("notificationsList");
+        const notificationItem = document.createElement("li");
+        notificationItem.innerText = `New booking on: ${booking.date}`;
+        notificationsList.appendChild(notificationItem);
+        const bookingsList = document.getElementById("bookingsList");
+        const bookingItem = document.createElement("li");
+        bookingItem.setAttribute("data-booking-id", booking.id);
+        bookingItem.innerText = ` Booking ID: ${booking.id}, Date: ${booking.date}`;
+        bookingsList.appendChild(bookingItem);
+      });
+    </script>
+  </body>
+</html>

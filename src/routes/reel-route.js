@@ -69,7 +69,7 @@ reelRouter.post('/reelsUpload', bearerAuth, acl('createUser'), upload.single("vi
                 let reelData = req.body;
                 reelData.url = url
                 reelData.userId = req.user.id;
-                console.log(req)
+                // console.log(req)
                 let reelRecord = await reel.create(reelData);
                 res.status(201).json(reelRecord);
 
