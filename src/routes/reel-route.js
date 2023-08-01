@@ -23,7 +23,7 @@ const storage = getStorage();
 const upload = multer({ storage: multer.memoryStorage() })
 
 reelRouter.get("/reels", bearerAuth, acl('readUser'), getAllReels);
-//reelRouter.post("/reels", bearerAuth, acl('createUser'), addReels);
+// reelRouter.post("/reels", bearerAuth, acl('createUser'), addReels);
 //reelRouter.delete("/reels/:id", bearerAuth, acl('deleteUser'), deleteReels);
 reelRouter.get("/reelsRestaurant/:id", bearerAuth, acl('readUser'), getReelsRest);
 reelRouter.get("/reelsHotel/:id", bearerAuth, acl('readUser'), getReelsHotel);
