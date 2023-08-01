@@ -52,35 +52,35 @@ async function getReelActivity(req, res) {
     const ActivityReel = await activity.readHasMany(id, reel.model);
     res.status(200).json(ActivityReel);
 }
-reelRouter.post('/reelsUpload',bearerAuth, acl('createUser'),upload.single("video"), (req,res)=>{
-    if(!req.file){
+
+reelRouter.post('/reelsUpload',  upload.single("video"), (req, res) => {
+    if (!req.file) {
         res.status(400).send("No files uploaded")
         return;
     }
     //let reelRecord = await reel.create(reelData);
     //res.status(201).json(reelRecord);
-    const StorageRef=ref(storage,req.file.originalname);
-    const metadata={
-        contentType:'video/mp4'
+    const StorageRef = ref(storage, req.file.originalname);
+    const metadata = {
+        contentType: 'video/mp4'
     };
-    uploadBytes(StorageRef,req.file.buffer,metadata)
-    .then(()=>{
-        getDownloadURL(StorageRef).then(async url=>{
-            let reelData = req.body;
-            reelData.url=url
-            reelData.userId = req.user.id; 
-// console.log(req)
-            let reelRecord = await reel.create(reelData);
-            res.status(201).json(reelRecord);
+    uploadBytes(StorageRef, req.file.buffer, metadata)
+        .then(() => {
+            getDownloadURL(StorageRef).then(async url => {
+                let reelData = req.body;
+                reelData.url = url
+                reelData.userId = req.user.id;
+                // console.log(req)
+                let reelRecord = await reel.create(reelData);
+                res.status(201).json(reelRecord);
 
-            //res.send({url})
+                //res.send({url})
+            })
+                .catch(err => {
+                    res.status(500).send(err)
+                })
         })
-        .catch(err=>{
-            res.status(500).send(err)
-        })
-    })
 })
-
 async function addReels(req, res) {
 
 }
