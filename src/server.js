@@ -8,7 +8,15 @@ const app = express();
 const http = require("http");
 const socketIO = require("socket.io");
 const server = http.createServer(app);
-const io = socketIO(server);
+const io = socketIO(server, {
+  cors: {
+    origin: "*", 
+    methods: ["GET", "POST"],
+  },
+});
+
+// const io = socketIO(server);
+
 // const { Server } = require("socket.io");
 
 // const io = new Server(server);
@@ -136,15 +144,22 @@ io.on("connection", (socket) => {
 
   socket.on("sendNotification", ({ senderName, receiverName, type }) => {
     const receiver = getUser(receiverName);
-    io.to(receiver.socketId).emit("getNotification", {
-      senderName,
-      type,
-    });
+   
+      if (receiver) {
+      io.to(receiver.socketId).emit("getNotification", {
+        senderName,
+        type,
+      });
+    } else {
+      console.log(`Receiver '${receiverName}' not found.`);
+    }
   });
 
  
   socket.on("disconnect", () => {
     removeUser(socket.id);
+  console.log("disconnect")
+
   });
 });
 
