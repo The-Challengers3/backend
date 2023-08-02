@@ -164,7 +164,9 @@ io.on("connection", (socket) => {
     } else {
       console.log(`Receiver '${receiverName}' not found.`);
     }
-  });  socket.on("join_room", (data) => {
+  }); 
+  
+  socket.on("join_room", (data) => {
     socket.join(data);
     console.log(`User with ID: ${socket.id} joined room: ${data}`);
   });
