@@ -23,7 +23,7 @@ const storage = getStorage();
 const upload = multer({ storage: multer.memoryStorage() })
 
 reelRouter.get("/reels", bearerAuth, acl('readUser'), getAllReels);
-// reelRouter.post("/reels", bearerAuth, acl('createUser'), addReels);
+//reelRouter.post("/reels", bearerAuth, acl('createUser'), addReels);
 //reelRouter.delete("/reels/:id", bearerAuth, acl('deleteUser'), deleteReels);
 reelRouter.get("/reelsRestaurant/:id", bearerAuth, acl('readUser'), getReelsRest);
 reelRouter.get("/reelsHotel/:id", bearerAuth, acl('readUser'), getReelsHotel);
@@ -52,7 +52,8 @@ async function getReelActivity(req, res) {
     const ActivityReel = await activity.readHasMany(id, reel.model);
     res.status(200).json(ActivityReel);
 }
-reelRouter.post('/reelsUpload', bearerAuth, acl('createUser'), upload.single("video"), (req, res) => {
+
+reelRouter.post('/reelsUpload',  upload.single("video"), (req, res) => {
     if (!req.file) {
         res.status(400).send("No files uploaded")
         return;
