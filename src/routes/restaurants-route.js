@@ -12,7 +12,7 @@ const acl = require("../auth/middleware/acl");
 restRouter.get("/restaurants", bearerAuth, acl('readUser'), getrestaurant);
 restRouter.get("/restaurants/:id", bearerAuth, acl('readUser'), getOnerestaurant);
 restRouter.post("/restaurants", bearerAuth, acl('createOwner'), createrestaurant);
-//restRouter.put("/restaurants/:id", bearerAuth, acl('update'), updaterestaurant);
+restRouter.put("/restaurants/:id", bearerAuth, acl('updateOwner'), updaterestaurant);
 
 restRouter.delete("/restaurants/:id", bearerAuth, acl('delete'), deleterestaurant);
 
@@ -39,14 +39,25 @@ async function createrestaurant(req, res) {
 async function updaterestaurant(req, res) {
   let id = parseInt(req.params.id);
   let restaurantData = req.body;
-  let restaurantRecord = await restaurant.update(id, restaurantData);
-  res.status(201).json(restaurantRecord);
+  let restData = await restaurant.get(id)
+  if (restData.ownerId == req.user.id) {
+    let restaurantRecord = await restaurant.update(id, restaurantData);
+    res.status(201).json(restaurantRecord);
+  }
+  res.json("you can't update this restaurant")
+
 }
 async function deleterestaurant(req, res) {
 
   let id = parseInt(req.params.id);
+  //let restData= await restaurant.get(id)
+  //if(restData.userId==req.user.id){
   let restaurantRecord = await restaurant.delete(id);
   res.status(204).json(restaurantRecord);
+
+  //}
+  //res.json("you can't delete this restaurant")
+
 
 }
 

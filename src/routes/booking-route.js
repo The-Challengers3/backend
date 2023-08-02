@@ -12,7 +12,7 @@ bookingRouter.get("/bookingHotel/:id", bearerAuth, acl('readOwner'), getbookingH
 bookingRouter.get("/bookingActivity/:id", bearerAuth, acl('readOwner'), getbookingActivity);
 bookingRouter.get("/bookings/:id", bearerAuth, acl('readUser'), getbookings);
 bookingRouter.post("/booking", bearerAuth, acl('createUser'), addbooking);
-//bookingRouter.delete("/booking/:id", bearerAuth, acl('deleteUser'), deletebooking);
+bookingRouter.delete("/booking/:id", bearerAuth, acl('deleteUser'), deletebooking);
 
 async function getbookingRest(req, res) {
     let id = parseInt(req.params.id);
@@ -48,8 +48,13 @@ async function addbooking(req, res) {
 
 async function deletebooking(req, res) {
     let id = parseInt(req.params.id);
+    let bookingData= await booking.get(id)
+    if(bookingData.userId==req.user.id){
     let bookingRecord = await booking.delete(id);
     res.status(204).json(bookingRecord);
+    }
+    res.json("you can't delete this booking")
+
 }
 
 module.exports = bookingRouter;
