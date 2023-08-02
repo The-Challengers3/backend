@@ -7,8 +7,10 @@ const bearerAuth = require("../auth/middleware/bearer");
 const acl = require("../auth/middleware/acl");
 
 commentRouter.get("/comments/:id", bearerAuth, acl('readUser'), getAllcomments);
+//commentRouter.get("/comments/:id", bearerAuth, acl('readUser'), getAllcomments);
+
 commentRouter.post("/comments", bearerAuth, acl('createUser'), addcomments);
-//commentRouter.delete("/comments/:id", bearerAuth, acl('deleteUser'), deletecomments);
+commentRouter.delete("/comments/:id", bearerAuth, acl('deleteUser'), deletecomments);
 
 async function getAllcomments(req, res) {
     let id = parseInt(req.params.id);
@@ -26,8 +28,13 @@ async function addcomments(req, res) {
 
 async function deletecomments(req, res) {
     let id = parseInt(req.params.id);
-    let commentRecord = await comment.delete(id);
-    res.status(204).json(commentRecord);
+let commentData= await comment.get(id)
+    if(commentData.userId==req.user.id){
+
+        let commentRecord = await comment.delete(id);
+        res.status(204).json(commentRecord);
+    }
+    res.json("you can't delete this comment")
 }
 
 module.exports = commentRouter;
