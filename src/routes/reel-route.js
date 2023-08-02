@@ -24,7 +24,7 @@ const upload =multer({storage:multer.memoryStorage()})
 
 reelRouter.get("/reels", bearerAuth, acl("readUser"), getAllReels);
 //reelRouter.post("/reels", bearerAuth, acl('createUser'), addReels);
-//reelRouter.delete("/reels/:id", bearerAuth, acl('deleteUser'), deleteReels);
+reelRouter.delete("/reels/:id", bearerAuth, acl('deleteUser'), deleteReels);
 reelRouter.get("/reelsRestaurant/:id", bearerAuth, acl('readUser'), getReelsRest);
 reelRouter.get("/reelsHotel/:id", bearerAuth, acl('readUser'), getReelsHotel);
 reelRouter.get("/reelsActivity/:id", bearerAuth, acl('readUser'), getReelActivity);
@@ -87,8 +87,13 @@ async function addReels(req, res) {
 
 async function deleteReels(req, res) {
     let id = parseInt(req.params.id);
+    let reelsData= await reel.get(id)
+    if(reelsData.userId==req.user.id){
     let reelRecord = await reel.delete(id);
     res.status(204).json(reelRecord);
+    }
+    res.json("you can't delete this reel")
+
 }
 
 module.exports = reelRouter;

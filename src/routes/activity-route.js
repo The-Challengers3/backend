@@ -10,8 +10,8 @@ const acl = require("../auth/middleware/acl");
 activityRouter.get("/activity", bearerAuth, acl('readUser'), getactivity);
 activityRouter.get("/activity/:id", bearerAuth, acl('readUser'), getOneactivity);
 activityRouter.post("/activity", bearerAuth, acl('createOwner'), createactivity);
-//activityRouter.put("/activity/:id", bearerAuth, acl('updateOwner'), updateactivity);
-//activityRouter.delete("/activity/:id", bearerAuth, acl('delete'), deleteactivity);
+activityRouter.put("/activity/:id", bearerAuth, acl('updateOwner'), updateactivity);
+activityRouter.delete("/activity/:id", bearerAuth, acl('delete'), deleteactivity);
 activityRouter.get("/owneractivity/:id", bearerAuth, acl('readOwner'), getUseractivity);
 
 async function getactivity(req, res) {
@@ -33,13 +33,23 @@ async function createactivity(req, res) {
 async function updateactivity(req, res) {
   let id = parseInt(req.params.id);
   let activityData = req.body;
+  let activitsyData= await activity.get(id)
+    if(activitsyData.ownerId==req.user.id){
   let activityRecord = await activity.update(id, activityData);
   res.status(201).json(activityRecord);
 }
+res.json("you can't update this activity")
+
+}
 async function deleteactivity(req, res) {
   let id = parseInt(req.params.id);
+  // let activityData= await activity.get(id)
+    // if(activityData.userId==req.user.id){
   let activityRecord = await activity.delete(id);
   res.status(204).json(activityRecord);
+// }
+// res.json("you can't delete this activity")
+
 }
 
 async function getUseractivity(req, res) {
