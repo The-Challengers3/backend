@@ -9,14 +9,23 @@ const { userCollection } = require("../models/index");
 const bearerAuth = require("../auth/middleware/bearer");
 const acl = require("../auth/middleware/acl");
 
-restRouter.get("/restaurants", bearerAuth, acl('readUser'), getrestaurant);
+restRouter.get("/restaurants", getrestaurant);
 restRouter.get("/restaurants/:id", bearerAuth, acl('readUser'), getOnerestaurant);
-restRouter.post("/restaurants", bearerAuth, acl('createOwner'), createrestaurant);
+restRouter.post("/restaurants", createrestaurant);
 restRouter.put("/restaurants/:id", bearerAuth, acl('updateOwner'), updaterestaurant);
 
 restRouter.delete("/restaurants/:id", bearerAuth, acl('delete'), deleterestaurant);
 
 restRouter.get("/ownerRest/:id", bearerAuth, acl('readOwner'), getUserRest);
+
+// restRouter.get("/restaurants", bearerAuth, acl('readUser'), getrestaurant);
+// restRouter.get("/restaurants/:id", bearerAuth, acl('readUser'), getOnerestaurant);
+// restRouter.post("/restaurants", bearerAuth, acl('createOwner'), createrestaurant);
+// restRouter.put("/restaurants/:id", bearerAuth, acl('updateOwner'), updaterestaurant);
+
+// restRouter.delete("/restaurants/:id", bearerAuth, acl('delete'), deleterestaurant);
+
+// restRouter.get("/ownerRest/:id", bearerAuth, acl('readOwner'), getUserRest);
 
 async function getrestaurant(req, res) {
   let restaurantRecord = await restaurant.get();
@@ -30,7 +39,7 @@ async function getOnerestaurant(req, res) {
 }
 async function createrestaurant(req, res) {
   let restaurantData = req.body;
-  restaurantData.ownerId = req.user.id;
+  restaurantData.ownerId = 1;
 
   let restaurantRecord = await restaurant.create(restaurantData);
   res.status(201).json(restaurantRecord);

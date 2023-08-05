@@ -8,7 +8,7 @@ const restModel = require('./restaurants/restaurants-model.js');
 const hotelModel = require('./hotel/hotel-model.js');
 const activityModel = require('./activity/activity-model.js');
 
-const PinsModel = require('./pins/pins.js');
+// const PinsModel = require('./pins/pins.js');
 
 
 const favModel = require('./favorites/favorite-model.js');
@@ -36,13 +36,13 @@ const booking = bookModel(sequelize, DataTypes);
 const reel = reelModel(sequelize, DataTypes);
 const comment = commentModel(sequelize, DataTypes);
 
-const pins = PinsModel(sequelize, DataTypes);
+// const pins = PinsModel(sequelize, DataTypes);
 
 
 
 const restaurantCollection = new Collection(restaurant);
 
-const pinsCollection = new Collection(pins);
+// const pinsCollection = new Collection(pins);
 
 
 const hotelCollection = new Collection(hotel);
@@ -196,5 +196,5 @@ module.exports = {
   favs: favsCollection,
   booking: bookingCollection,
   users: user,
-  Pins:pinsCollection,
+  // Pins:pinsCollection,
 }

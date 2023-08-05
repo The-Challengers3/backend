@@ -29,7 +29,7 @@ const favsRouter = require('./routes/favorite-route');
 const bookingRouter = require('./routes/booking-route');
 const reelRouter = require('./routes/reel-route');
 const commentRouter = require('./routes/comment-route');
-const Pinsrouter = require('./routes/pins');
+// const Pinsrouter = require('./routes/pins');
 
 
 
@@ -54,7 +54,7 @@ app.use(express.urlencoded({ extended: true }));
 
 // Routes
 app.use(restRouter);
-app.use(Pinsrouter);
+// app.use(Pinsrouter);
 
 app.use(activityRouter);
 app.use(hotelRouter);
