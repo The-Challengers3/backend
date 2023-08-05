@@ -140,26 +140,32 @@ io.on("connection", (socket) => {
   console.log("new connection")
   socket.on("newUser", (username) => {
     addNewUser(username, socket.id);
+    console.log('=======>', username)
+    console.log(onlineUsers)
   });
 
-  socket.on("join_room", (data) => {
-    socket.join(data);
-    console.log(`User with ID: ${socket.id} joined room: ${data}`);
-  });
+  // socket.on("join_room", (data) => {
+  //   socket.join(data);
+  //   console.log(`User with ID: ${socket.id} joined room: ${data}`);
+  // });
 
   socket.on("send_message", (data) => {
     socket.to(data.room).emit("receive_message", data);
   });
 
 
+  socket.on("send_roomId", (userRoomId) => {
+    socket.join(userRoomId);
+    console.log(`User with ID: ${socket.id} joined room: ${userRoomId}`);
+  })
 
-  socket.on("sendNotification", ({ senderName, receiverName, type }) => {
+  socket.on("sendNotification", ({ senderName, receiverName, roomId }) => {
     const receiver = getUser(receiverName);
 
     if (receiver) {
       io.to(receiver.socketId).emit("getNotification", {
         senderName,
-        type,
+        roomId,
       });
     } else {
       console.log(`Receiver '${receiverName}' not found.`);
@@ -168,7 +174,6 @@ io.on("connection", (socket) => {
     socket.join(data);
     console.log(`User with ID: ${socket.id} joined room: ${data}`);
   });
-
 
   socket.on("disconnect", () => {
     removeUser(socket.id);
