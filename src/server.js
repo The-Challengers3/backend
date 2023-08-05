@@ -10,7 +10,7 @@ const socketIO = require("socket.io");
 const server = http.createServer(app);
 const io = socketIO(server, {
   cors: {
-    origin: "*", 
+    origin: "*",
     methods: ["GET", "POST"],
   },
 });
@@ -65,7 +65,7 @@ app.use(commentRouter);
 app.use(authRouter);
 
 app.get("/", (req, res) => {
-    res.status(200).send('Welcome to the API!')
+  res.status(200).send('Welcome to the API!')
 });
 
 // Catchalls
@@ -114,7 +114,7 @@ app.get("/", (req, res) => {
 //     });
 //   });
 
-  
+
 
 //   socket.on("disconnect", () => {
 //     console.log("User disconnected:", socket.id);
@@ -144,51 +144,54 @@ io.on("connection", (socket) => {
   console.log("new connection")
   socket.on("newUser", (username) => {
     addNewUser(username, socket.id);
+    console.log('=======>', username)
+    console.log(onlineUsers)
   });
 
-  socket.on("join_room", (data) => {
-    socket.join(data);
-    console.log(`User with ID: ${socket.id} joined room: ${data}`);
-  });
+  // socket.on("join_room", (data) => {
+  //   socket.join(data);
+  //   console.log(`User with ID: ${socket.id} joined room: ${data}`);
+  // });
 
   socket.on("send_message", (data) => {
     socket.to(data.room).emit("receive_message", data);
   });
 
-  
 
-  socket.on("sendNotification", ({ senderName, receiverName, type }) => {
+  socket.on("send_roomId", (userRoomId) => {
+    socket.join(userRoomId);
+    console.log(`User with ID: ${socket.id} joined room: ${userRoomId}`);
+  })
+
+  socket.on("sendNotification", ({ senderName, receiverName, roomId }) => {
     const receiver = getUser(receiverName);
-   
-      if (receiver) {
+
+    if (receiver) {
       io.to(receiver.socketId).emit("getNotification", {
         senderName,
-        type,
+        roomId,
       });
     } else {
       console.log(`Receiver '${receiverName}' not found.`);
     }
-  }); 
-  
-  socket.on("join_room", (data) => {
+  }); socket.on("join_room", (data) => {
     socket.join(data);
     console.log(`User with ID: ${socket.id} joined room: ${data}`);
   });
 
- 
   socket.on("disconnect", () => {
     removeUser(socket.id);
-  console.log("disconnect")
+    console.log("disconnect")
 
   });
 });
 
 // io.listen(5000);
 module.exports = {
-    server: server,
-    start: (port) => {
-        server.listen(port, () => {
-            console.log(`Server Up on ${port}`);
-        });
-    },
+  server: server,
+  start: (port) => {
+    server.listen(port, () => {
+      console.log(`Server Up on ${port}`);
+    });
+  },
 };
