@@ -30,21 +30,21 @@ async function getOnerestaurant(req, res) {
 }
 async function createrestaurant(req, res) {
   let restaurantData = req.body;
-  restaurantData.ownerId = req.user.id; 
+  restaurantData.ownerId = req.user.id;
 
   let restaurantRecord = await restaurant.create(restaurantData);
   res.status(201).json(restaurantRecord);
-  
+
 }
 async function updaterestaurant(req, res) {
   let id = parseInt(req.params.id);
   let restaurantData = req.body;
-  let restData= await restaurant.get(id)
-  if(restData.ownerId==req.user.id){
-  let restaurantRecord = await restaurant.update(id, restaurantData);
-  res.status(201).json(restaurantRecord);
-}
-res.json("you can't update this restaurant")
+  let restData = await restaurant.get(id)
+  if (restData.ownerId == req.user.id) {
+    let restaurantRecord = await restaurant.update(id, restaurantData);
+    res.status(201).json(restaurantRecord);
+  }
+  res.json("you can't update this restaurant")
 
 }
 async function deleterestaurant(req, res) {
@@ -54,10 +54,11 @@ async function deleterestaurant(req, res) {
   //if(restData.userId==req.user.id){
   let restaurantRecord = await restaurant.delete(id);
   res.status(204).json(restaurantRecord);
+
   //}
   //res.json("you can't delete this restaurant")
 
-  
+
 }
 
 async function getUserRest(req, res) {
