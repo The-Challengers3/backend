@@ -32,7 +32,12 @@ const reelRouter = require('./routes/reel-route');
 const commentRouter = require('./routes/comment-route');
 // const Pinsrouter = require('./routes/pins');
 
+const uuid = require('uuid').v4;
+const queue = {
+  notifications: {
 
+  }
+}
 
 // app.use(express.static(path.join(__dirname, "public")));
 
@@ -168,18 +173,42 @@ io.on("connection", (socket) => {
   socket.on("sendNotification", ({ senderName, receiverName, roomId }) => {
     const receiver = getUser(receiverName);
 
+    const id = uuid();
+    queue.notifications[id] = senderName;
+    console.log(queue.notifications)
     if (receiver) {
+
       io.to(receiver.socketId).emit("getNotification", {
+
         senderName,
         roomId,
       });
     } else {
       console.log(`Receiver '${receiverName}' not found.`);
+
     }
   }); socket.on("join_room", (data) => {
     socket.join(data);
     console.log(`User with ID: ${socket.id} joined room: ${data}`);
   });
+
+  socket.on('get-all', () => {
+    Object.keys(queue.notifications).forEach((id) => {
+      socket.emit('new-notifications-msg', {
+        id: id,
+        Details: queue.notifications[id]
+      })
+
+    })
+    console.log(11111111111)
+  })
+  socket.on('received', (payload) => {
+    console.log('msgQueue v1', payload.Details)
+    delete queue.notifications[payload.id];
+    console.log('msgQueue v2', queue.notifications)
+
+  })
+
 
   socket.on("disconnect", () => {
     removeUser(socket.id);
