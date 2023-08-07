@@ -4,7 +4,8 @@ const express = require("express");
 const cors = require("cors");
 const morgan = require('morgan');
 const app = express();
-// const path = require("path");
+const swaggerUi = require("swagger-ui-express");
+const swaggerJsdoc = require("swagger-jsdoc")
 const http = require("http");
 const socketIO = require("socket.io");
 const server = http.createServer(app);
@@ -63,6 +64,7 @@ app.use(bookingRouter);
 app.use(reelRouter);
 app.use(commentRouter);
 app.use(authRouter);
+
 
 app.get("/", (req, res) => {
   res.status(200).send('Welcome to the API!')
@@ -186,7 +188,30 @@ io.on("connection", (socket) => {
   });
 });
 
-// io.listen(5000);
+const options = {
+  definition: {
+    openapi: "3.0.0",
+    info: {
+      title: "Library API",
+      version: "1.0.0",
+      description: "A simple Express Library API",
+    },
+    servers: [
+      {
+        url: "http://localhost:3005",
+      },
+    ],
+  },
+  apis: ["./routes/*.js"],
+};
+
+const specs = swaggerJsdoc(options);
+app.use(
+  "/api-docs",
+  swaggerUi.serve,
+  swaggerUi.setup(specs)
+);
+
 module.exports = {
   server: server,
   start: (port) => {

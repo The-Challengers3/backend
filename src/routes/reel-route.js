@@ -53,7 +53,7 @@ async function getReelActivity(req, res) {
     res.status(200).json(ActivityReel);
 }
 
-reelRouter.post('/reelsUpload',  upload.single("video"), (req, res) => {
+reelRouter.post('/reelsUpload', bearerAuth, acl('createUser'), upload.single("video"), (req, res) => {
     if (!req.file) {
         res.status(400).send("No files uploaded")
         return;
@@ -87,10 +87,10 @@ async function addReels(req, res) {
 
 async function deleteReels(req, res) {
     let id = parseInt(req.params.id);
-    let reelsData= await reel.get(id)
-    if(reelsData.userId==req.user.id){
-    let reelRecord = await reel.delete(id);
-    res.status(204).json(reelRecord);
+    let reelsData = await reel.get(id)
+    if (reelsData.userId == req.user.id) {
+        let reelRecord = await reel.delete(id);
+        res.status(204).json(reelRecord);
     }
     res.json("you can't delete this reel")
 
