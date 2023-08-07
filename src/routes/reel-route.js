@@ -53,7 +53,7 @@ async function getReelActivity(req, res) {
     res.status(200).json(ActivityReel);
 }
 
-reelRouter.post('/reelsUpload',  upload.single("video"), (req, res) => {
+reelRouter.post('/reelsUpload',bearerAuth, acl('createUser'),  upload.single("video"), (req, res) => {
     if (!req.file) {
         res.status(400).send("No files uploaded")
         return;
