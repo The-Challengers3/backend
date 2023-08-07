@@ -2,10 +2,10 @@
 require("dotenv").config();
 const express = require("express");
 const cors = require("cors");
-const morgan = require('morgan');
+const morgan = require("morgan");
 const app = express();
 const swaggerUi = require("swagger-ui-express");
-const swaggerJsdoc = require("swagger-jsdoc")
+const swaggerJsdoc = require("swagger-jsdoc");
 const http = require("http");
 const socketIO = require("socket.io");
 const server = http.createServer(app);
@@ -22,22 +22,20 @@ const io = socketIO(server, {
 
 // const io = new Server(server);
 
-const authRouter = require('./auth/routes')
-const restRouter = require('./routes/restaurants-route');
-const activityRouter = require('./routes/activity-route');
-const hotelRouter = require('./routes/hotel-route');
-const favsRouter = require('./routes/favorite-route');
-const bookingRouter = require('./routes/booking-route');
-const reelRouter = require('./routes/reel-route');
-const commentRouter = require('./routes/comment-route');
+const authRouter = require("./auth/routes");
+const restRouter = require("./routes/restaurants-route");
+const activityRouter = require("./routes/activity-route");
+const hotelRouter = require("./routes/hotel-route");
+const favsRouter = require("./routes/favorite-route");
+const bookingRouter = require("./routes/booking-route");
+const reelRouter = require("./routes/reel-route");
+const commentRouter = require("./routes/comment-route");
 // const Pinsrouter = require('./routes/pins');
 
-const uuid = require('uuid').v4;
+const uuid = require("uuid").v4;
 const queue = {
-  notifications: {
-
-  }
-}
+  notifications: {},
+};
 
 // app.use(express.static(path.join(__dirname, "public")));
 
@@ -53,7 +51,7 @@ app.use(express.json());
 
 // App Level MW
 app.use(cors());
-app.use(morgan('dev'));
+app.use(morgan("dev"));
 
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
@@ -70,9 +68,8 @@ app.use(reelRouter);
 app.use(commentRouter);
 app.use(authRouter);
 
-
 app.get("/", (req, res) => {
-  res.status(200).send('Welcome to the API!')
+  res.status(200).send("Welcome to the API!");
 });
 
 // Catchalls
@@ -80,7 +77,6 @@ app.get("/", (req, res) => {
 // app.use(errorHandler);
 //--------------socket--------------------
 // app.use(express.static("public"));
-
 
 // let bookings = [];
 
@@ -115,13 +111,10 @@ app.get("/", (req, res) => {
 //         // io.to(booking.clientSocketId).emit("bookingConfirmed", bookingId);
 //         io.emit("bookingConfirmed", bookingId);
 
-
 //       }
 //       return booking;
 //     });
 //   });
-
-
 
 //   socket.on("disconnect", () => {
 //     console.log("User disconnected:", socket.id);
@@ -148,11 +141,11 @@ const getUser = (username) => {
 };
 
 io.on("connection", (socket) => {
-  console.log("new connection")
+  console.log("new connection");
   socket.on("newUser", (username) => {
     addNewUser(username, socket.id);
-    console.log('=======>', username)
-    console.log(onlineUsers)
+    console.log("=======>", username);
+    console.log(onlineUsers);
   });
 
   // socket.on("join_room", (data) => {
@@ -164,56 +157,49 @@ io.on("connection", (socket) => {
     socket.to(data.room).emit("receive_message", data);
   });
 
-
   socket.on("send_roomId", (userRoomId) => {
     socket.join(userRoomId);
     console.log(`User with ID: ${socket.id} joined room: ${userRoomId}`);
-  })
+  });
 
   socket.on("sendNotification", ({ senderName, receiverName, roomId }) => {
     const receiver = getUser(receiverName);
 
     const id = uuid();
     queue.notifications[id] = senderName;
-    console.log(queue.notifications)
+    console.log(queue.notifications);
     if (receiver) {
-
       io.to(receiver.socketId).emit("getNotification", {
-
         senderName,
         roomId,
       });
     } else {
       console.log(`Receiver '${receiverName}' not found.`);
-
     }
-  }); socket.on("join_room", (data) => {
+  });
+  socket.on("join_room", (data) => {
     socket.join(data);
     console.log(`User with ID: ${socket.id} joined room: ${data}`);
   });
 
-  socket.on('get-all', () => {
+  socket.on("get-all", () => {
     Object.keys(queue.notifications).forEach((id) => {
-      socket.emit('new-notifications-msg', {
+      socket.emit("new-notifications-msg", {
         id: id,
-        Details: queue.notifications[id]
-      })
-
-    })
-    console.log(11111111111)
-  })
-  socket.on('received', (payload) => {
-    console.log('msgQueue v1', payload.Details)
+        Details: queue.notifications[id],
+      });
+    });
+    console.log(11111111111);
+  });
+  socket.on("received", (payload) => {
+    console.log("msgQueue v1", payload.Details);
     delete queue.notifications[payload.id];
-    console.log('msgQueue v2', queue.notifications)
-
-  })
-
+    console.log("msgQueue v2", queue.notifications);
+  });
 
   socket.on("disconnect", () => {
     removeUser(socket.id);
-    console.log("disconnect")
-
+    console.log("disconnect");
   });
 });
 
@@ -235,11 +221,7 @@ const options = {
 };
 
 const specs = swaggerJsdoc(options);
-app.use(
-  "/api-docs",
-  swaggerUi.serve,
-  swaggerUi.setup(specs)
-);
+app.use("/api-docs", swaggerUi.serve, swaggerUi.setup(specs));
 
 module.exports = {
   server: server,
