@@ -6,9 +6,9 @@ const { reel, restaurant, hotel, activity } = require("../models/index");
 const bearerAuth = require("../auth/middleware/bearer");
 const acl = require("../auth/middleware/acl");
 
-const multer =require('multer');
-const firebase=require('firebase/app');
-const {getStorage,ref,uploadBytes,getDownloadURL}=require("firebase/storage")
+const multer = require('multer');
+const firebase = require('firebase/app');
+const { getStorage, ref, uploadBytes, getDownloadURL } = require("firebase/storage")
 const firebaseConfig = {
     apiKey: "AIzaSyCqtdtPoRTa7HN-wFy68qOdt6vN60CoUks",
     authDomain: "laith-5d196.firebaseapp.com",
@@ -17,14 +17,14 @@ const firebaseConfig = {
     messagingSenderId: "172459670098",
     appId: "1:172459670098:web:c72f5d5cd20e370f617d8b",
     measurementId: "G-NYS7QF36SC"
-  };
+};
 firebase.initializeApp(firebaseConfig);
-const storage=getStorage();
-const upload =multer({storage:multer.memoryStorage()})
+const storage = getStorage();
+const upload = multer({ storage: multer.memoryStorage() })
 
-reelRouter.get("/reels", bearerAuth, acl("readUser"), getAllReels);
+reelRouter.get("/reels", bearerAuth, acl('readUser'), getAllReels);
 //reelRouter.post("/reels", bearerAuth, acl('createUser'), addReels);
-//reelRouter.delete("/reels/:id", bearerAuth, acl('deleteUser'), deleteReels);
+reelRouter.delete("/reels/:id", bearerAuth, acl('deleteUser'), deleteReels);
 reelRouter.get("/reelsRestaurant/:id", bearerAuth, acl('readUser'), getReelsRest);
 reelRouter.get("/reelsHotel/:id", bearerAuth, acl('readUser'), getReelsHotel);
 reelRouter.get("/reelsActivity/:id", bearerAuth, acl('readUser'), getReelActivity);
@@ -53,7 +53,7 @@ async function getReelActivity(req, res) {
     res.status(200).json(ActivityReel);
 }
 
-reelRouter.post('/reelsUpload', bearerAuth,acl("createUser"), upload.single("video"), (req, res) => {
+reelRouter.post('/reelsUpload', bearerAuth, acl('createUser'), upload.single("video"), (req, res) => {
     if (!req.file) {
         res.status(400).send("No files uploaded")
         return;
@@ -87,8 +87,13 @@ async function addReels(req, res) {
 
 async function deleteReels(req, res) {
     let id = parseInt(req.params.id);
-    let reelRecord = await reel.delete(id);
-    res.status(204).json(reelRecord);
+    let reelsData = await reel.get(id)
+    if (reelsData.userId == req.user.id) {
+        let reelRecord = await reel.delete(id);
+        res.status(204).json(reelRecord);
+    }
+    res.json("you can't delete this reel")
+
 }
 
 module.exports = reelRouter;
