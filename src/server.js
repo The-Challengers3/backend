@@ -1,11 +1,12 @@
 "use strict";
 require("dotenv").config();
+const uuid = require('uuid').v4;
 const express = require("express");
 const cors = require("cors");
 const morgan = require("morgan");
 const app = express();
 const swaggerUi = require("swagger-ui-express");
-const swaggerJsdoc = require("swagger-jsdoc");
+const swaggerJsdoc = require("swagger-jsdoc")
 const http = require("http");
 const socketIO = require("socket.io");
 const server = http.createServer(app);
@@ -16,12 +17,6 @@ const io = socketIO(server, {
   },
 });
 
-// const io = socketIO(server);
-
-// const { Server } = require("socket.io");
-
-// const io = new Server(server);
-
 const authRouter = require("./auth/routes");
 const restRouter = require("./routes/restaurants-route");
 const activityRouter = require("./routes/activity-route");
@@ -30,12 +25,27 @@ const favsRouter = require("./routes/favorite-route");
 const bookingRouter = require("./routes/booking-route");
 const reelRouter = require("./routes/reel-route");
 const commentRouter = require("./routes/comment-route");
+
+// const { Server } = require("socket.io");
+
+// const io = new Server(server);
+
+const authRouter = require('./auth/routes')
+const restRouter = require('./routes/restaurants-route');
+const activityRouter = require('./routes/activity-route');
+const hotelRouter = require('./routes/hotel-route');
+const favsRouter = require('./routes/favorite-route');
+const bookingRouter = require('./routes/booking-route');
+const reelRouter = require('./routes/reel-route');
+const commentRouter = require('./routes/comment-route');
 // const Pinsrouter = require('./routes/pins');
 
-const uuid = require("uuid").v4;
+const uuid = require('uuid').v4;
 const queue = {
-  notifications: {},
-};
+  notifications: {
+
+  }
+}
 
 // app.use(express.static(path.join(__dirname, "public")));
 
@@ -58,8 +68,6 @@ app.use(express.urlencoded({ extended: true }));
 
 // Routes
 app.use(restRouter);
-// app.use(Pinsrouter);
-
 app.use(activityRouter);
 app.use(hotelRouter);
 app.use(favsRouter);
@@ -72,11 +80,12 @@ app.get("/", (req, res) => {
   res.status(200).send("Welcome to the API!");
 });
 
-// Catchalls
-// app.use('*', notFound);
-// app.use(errorHandler);
+app.use("*", notFound);
+app.use(errorHandler);
+
 //--------------socket--------------------
 // app.use(express.static("public"));
+
 
 // let bookings = [];
 
@@ -111,10 +120,13 @@ app.get("/", (req, res) => {
 //         // io.to(booking.clientSocketId).emit("bookingConfirmed", bookingId);
 //         io.emit("bookingConfirmed", bookingId);
 
+
 //       }
 //       return booking;
 //     });
 //   });
+
+
 
 //   socket.on("disconnect", () => {
 //     console.log("User disconnected:", socket.id);
@@ -126,6 +138,10 @@ app.get("/", (req, res) => {
 // }
 
 let onlineUsers = [];
+let queue={
+  notifications:{
+  }
+}
 
 const addNewUser = (username, socketId) => {
   !onlineUsers.some((user) => user.username === username) &&
@@ -147,11 +163,6 @@ io.on("connection", (socket) => {
     console.log("=======>", username);
     console.log(onlineUsers);
   });
-
-  // socket.on("join_room", (data) => {
-  //   socket.join(data);
-  //   console.log(`User with ID: ${socket.id} joined room: ${data}`);
-  // });
 
   socket.on("send_message", (data) => {
     socket.to(data.room).emit("receive_message", data);
@@ -186,13 +197,14 @@ io.on("connection", (socket) => {
     Object.keys(queue.notifications).forEach((id) => {
       socket.emit("new-notifications-msg", {
         id: id,
-        Details: queue.notifications[id],
-      });
-    });
-    console.log(11111111111);
-  });
-  socket.on("received", (payload) => {
-    console.log("msgQueue v1", payload.Details);
+        Details: queue.notifications[id]
+      })
+
+    })
+    console.log(11111111111)
+  })
+  socket.on('received', (payload) => {
+    console.log('msgQueue v1', payload.Details)
     delete queue.notifications[payload.id];
     console.log("msgQueue v2", queue.notifications);
   });
@@ -221,7 +233,11 @@ const options = {
 };
 
 const specs = swaggerJsdoc(options);
-app.use("/api-docs", swaggerUi.serve, swaggerUi.setup(specs));
+app.use(
+  "/api-docs",
+  swaggerUi.serve,
+  swaggerUi.setup(specs)
+);
 
 module.exports = {
   server: server,
