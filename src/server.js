@@ -93,9 +93,8 @@ io.on("connection", (socket) => {
   socket.on("sendNotification", ({ senderName, receiverName, roomId }) => {
     const receiver = getUser(receiverName);
 
-    const id = uuid();
-    queue.notifications[id] = senderName;
-    console.log(queue.notifications);
+   
+    console.log(queue.notifications)
     if (receiver) {
       io.to(receiver.socketId).emit("getNotification", {
         senderName,
@@ -103,6 +102,8 @@ io.on("connection", (socket) => {
       });
     } else {
       console.log(`Receiver '${receiverName}' not found.`);
+      const id = uuid();
+      queue.notifications[id] = senderName;
     }
   });
   socket.on("join_room", (data) => {
