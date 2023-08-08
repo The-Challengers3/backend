@@ -1,6 +1,6 @@
 "use strict";
 require("dotenv").config();
-const uuid = require('uuid').v4;
+const uuid = require("uuid").v4;
 const express = require("express");
 const cors = require("cors");
 const morgan = require("morgan");
@@ -46,7 +46,6 @@ app.use(reelRouter);
 app.use(commentRouter);
 app.use(authRouter);
 
-
 app.get("/", (req, res) => {
   res.status(200).send("Welcome to the API!");
 });
@@ -57,10 +56,9 @@ app.use(errorHandler);
 //--------------socket--------------------
 
 let onlineUsers = [];
-let queue={
-  notifications:{
-  }
-}
+let queue = {
+  notifications: {},
+};
 
 const addNewUser = (username, socketId) => {
   !onlineUsers.some((user) => user.username === username) &&
@@ -98,9 +96,7 @@ io.on("connection", (socket) => {
    
     console.log(queue.notifications)
     if (receiver) {
-
       io.to(receiver.socketId).emit("getNotification", {
-
         senderName,
         roomId,
       });
@@ -115,22 +111,19 @@ io.on("connection", (socket) => {
     console.log(`User with ID: ${socket.id} joined room: ${data}`);
   });
 
-  socket.on('get-all', () => {
+  socket.on("get-all", () => {
     Object.keys(queue.notifications).forEach((id) => {
-      socket.emit('new-notifications-msg', {
+      socket.emit("new-notifications-msg", {
         id: id,
-        Details: queue.notifications[id]
-      })
-
-    })
-  })
-  socket.on('received', (payload) => {
-    console.log('msgQueue v1', payload.Details)
+        Details: queue.notifications[id],
+      });
+    });
+  });
+  socket.on("received", (payload) => {
+    console.log("msgQueue v1", payload.Details);
     delete queue.notifications[payload.id];
-    console.log('msgQueue v2', queue.notifications)
-
-  })
-
+    console.log("msgQueue v2", queue.notifications);
+  });
 
   socket.on("disconnect", () => {
     removeUser(socket.id);
