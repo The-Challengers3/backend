@@ -56,6 +56,11 @@ app.use(errorHandler);
 //--------------socket--------------------
 
 let onlineUsers = [];
+let queue={
+  notifications:{
+
+  }
+}
 
 const addNewUser = (username, socketId) => {
   !onlineUsers.some((user) => user.username === username) &&
