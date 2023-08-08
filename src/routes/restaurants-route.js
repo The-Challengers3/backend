@@ -8,7 +8,8 @@ const { userCollection } = require("../models/index");
 const bearerAuth = require("../auth/middleware/bearer");
 const acl = require("../auth/middleware/acl");
 
-restRouter.get("/restaurants", bearerAuth, acl("readUser"), getrestaurant);
+restRouter.get("/restaurants", bearerAuth, getrestaurant);
+
 restRouter.get(
   "/restaurants/:id",
   bearerAuth,
