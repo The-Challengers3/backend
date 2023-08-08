@@ -47,8 +47,7 @@ async function getOnerestaurant(req, res) {
 }
 async function createrestaurant(req, res) {
   let restaurantData = req.body;
-  restaurantData.ownerId = 1;
-
+  restaurantData.ownerId = req.user.id ;
   let restaurantRecord = await restaurant.create(restaurantData);
   res.status(201).json(restaurantRecord);
 }
