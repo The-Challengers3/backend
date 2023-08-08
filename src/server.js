@@ -1,5 +1,6 @@
 "use strict";
 require("dotenv").config();
+const uuid = require('uuid').v4;
 const express = require("express");
 const cors = require("cors");
 const morgan = require("morgan");
@@ -58,7 +59,6 @@ app.use(errorHandler);
 let onlineUsers = [];
 let queue={
   notifications:{
-
   }
 }
 
@@ -123,7 +123,6 @@ io.on("connection", (socket) => {
       })
 
     })
-    console.log(11111111111)
   })
   socket.on('received', (payload) => {
     console.log('msgQueue v1', payload.Details)
