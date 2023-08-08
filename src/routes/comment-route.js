@@ -6,35 +6,37 @@ const { comment, reel } = require("../models/index");
 const bearerAuth = require("../auth/middleware/bearer");
 const acl = require("../auth/middleware/acl");
 
-commentRouter.get("/comments/:id", bearerAuth, acl('readUser'), getAllcomments);
-//commentRouter.get("/comments/:id", bearerAuth, acl('readUser'), getAllcomments);
-
-commentRouter.post("/comments", bearerAuth, acl('createUser'), addcomments);
-commentRouter.delete("/comments/:id", bearerAuth, acl('deleteUser'), deletecomments);
+commentRouter.get("/comments/:id", bearerAuth, acl("readUser"), getAllcomments);
+commentRouter.post("/comments", bearerAuth, acl("createUser"), addcomments);
+commentRouter.delete(
+  "/comments/:id",
+  bearerAuth,
+  acl("deleteUser"),
+  deletecomments
+);
 
 async function getAllcomments(req, res) {
-    let id = parseInt(req.params.id);
-    const commentReel = await reel.readHasMany(id, comment.model);
-    res.status(200).json(commentReel);
+  let id = parseInt(req.params.id);
+  const commentReel = await reel.readHasMany(id, comment.model);
+  res.status(200).json(commentReel);
 }
 
 async function addcomments(req, res) {
-    let commentData = req.body;
-    commentData.userId = req.user.id;
+  let commentData = req.body;
+  commentData.userId = req.user.id;
 
-    let commentRecord = await comment.create(commentData);
-    res.status(201).json(commentRecord);
+  let commentRecord = await comment.create(commentData);
+  res.status(201).json(commentRecord);
 }
 
 async function deletecomments(req, res) {
-    let id = parseInt(req.params.id);
-let commentData= await comment.get(id)
-    if(commentData.userId==req.user.id){
-
-        let commentRecord = await comment.delete(id);
-        res.status(204).json(commentRecord);
-    }
-    res.json("you can't delete this comment")
+  let id = parseInt(req.params.id);
+  let commentData = await comment.get(id);
+  if (commentData.userId == req.user.id) {
+    let commentRecord = await comment.delete(id);
+    res.status(204).json(commentRecord);
+  }
+  res.json("you can't delete this comment");
 }
 
 module.exports = commentRouter;

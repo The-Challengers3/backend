@@ -4,7 +4,7 @@ const { users } = require('../../models/index')
 
 module.exports = async (req, res, next) => {
 
-  // try {
+  try {
 
     if (!req.headers.authorization) {  }
 
@@ -14,11 +14,11 @@ module.exports = async (req, res, next) => {
     req.token = validUser.token;
     next();
 
-  // } catch (e) {
-  //   _authError();
-  // }
+  } catch (e) {
+    _authError();
+  }
 
-  // function _authError() {
-  //   next('Invalid Login');
-  // }
+  function _authError() {
+    next('Invalid Login');
+  }
 }
