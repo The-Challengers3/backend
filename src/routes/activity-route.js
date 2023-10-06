@@ -8,7 +8,7 @@ const { userCollection } = require("../models/index");
 const bearerAuth = require("../auth/middleware/bearer");
 const acl = require("../auth/middleware/acl");
 
-activityRouter.get("/activity", bearerAuth, acl("readUser"), getactivity);
+activityRouter.get("/activity", getactivity);
 activityRouter.get(
   "/activity/:id",
   bearerAuth,
@@ -17,8 +17,8 @@ activityRouter.get(
 );
 activityRouter.post(
   "/activity",
-  bearerAuth,
-  acl("createOwner"),
+  // bearerAuth,
+  // acl("createOwner"),
   createactivity
 );
 activityRouter.put(
@@ -51,7 +51,7 @@ async function getOneactivity(req, res) {
 }
 async function createactivity(req, res) {
   let activityData = req.body;
-  activityData.ownerId = req.user.id;
+  // activityData.ownerId = req.user.id;
 
   let activityRecord = await activity.create(activityData);
   res.status(201).json(activityRecord);
@@ -60,7 +60,7 @@ async function updateactivity(req, res) {
   let id = parseInt(req.params.id);
   let activityData = req.body;
   let activitsyData = await activity.get(id);
-  if (activitsyData.ownerId == req.user.id) {
+  if (activitsyData.ownerId == req.user.id || req.user.role == 'admin') {
     let activityRecord = await activity.update(id, activityData);
     res.status(201).json(activityRecord);
   }

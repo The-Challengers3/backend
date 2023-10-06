@@ -3,7 +3,7 @@
 const reelModel = (sequelize, DataTypes) =>
   sequelize.define("reel", {
     username: { type: DataTypes.STRING},
-    url: {type: DataTypes.STRING},
+    url: {type: DataTypes.TEXT},
     description: {type: DataTypes.TEXT},
     rating: { type: DataTypes.FLOAT},
     restaurantId: { type: DataTypes.INTEGER},

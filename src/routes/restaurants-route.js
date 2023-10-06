@@ -8,7 +8,7 @@ const { userCollection } = require("../models/index");
 const bearerAuth = require("../auth/middleware/bearer");
 const acl = require("../auth/middleware/acl");
 
-restRouter.get("/restaurants", bearerAuth, getrestaurant);
+restRouter.get("/restaurants", getrestaurant);
 
 restRouter.get(
   "/restaurants/:id",
@@ -18,8 +18,8 @@ restRouter.get(
 );
 restRouter.post(
   "/restaurants",
-  bearerAuth,
-  acl("createOwner"),
+  // bearerAuth,
+  // acl("createOwner"),
   createrestaurant
 );
 restRouter.put(
@@ -47,7 +47,7 @@ async function getOnerestaurant(req, res) {
 }
 async function createrestaurant(req, res) {
   let restaurantData = req.body;
-  restaurantData.ownerId = req.user.id ;
+  // restaurantData.ownerId = req.user.id;
   let restaurantRecord = await restaurant.create(restaurantData);
   res.status(201).json(restaurantRecord);
 }
@@ -55,7 +55,7 @@ async function updaterestaurant(req, res) {
   let id = parseInt(req.params.id);
   let restaurantData = req.body;
   let restData = await restaurant.get(id);
-  if (restData.ownerId == req.user.id) {
+  if (restData.ownerId == req.user.id || req.user.role == 'admin') {
     let restaurantRecord = await restaurant.update(id, restaurantData);
     res.status(201).json(restaurantRecord);
   }
