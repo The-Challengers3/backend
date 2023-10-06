@@ -3,7 +3,7 @@
 const bookModel = (sequelize, DataTypes) => sequelize.define('bookings', {
   name: { type: DataTypes.STRING},
   username: { type: DataTypes.STRING},
-  img: { type: DataTypes.STRING},
+  img: { type: DataTypes.TEXT},
   howmany: { type: DataTypes.INTEGER},
   date: { type: DataTypes.DATE },
   userId: { type: DataTypes.INTEGER},

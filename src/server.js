@@ -58,6 +58,11 @@ app.use(errorHandler);
 let onlineUsers = [];
 let queue = {
   notifications: {},
+
+};
+let queue2 = {
+  messages: {},
+  
 };
 
 const addNewUser = (username, socketId) => {
@@ -102,6 +107,7 @@ io.on("connection", (socket) => {
       });
     } else {
       console.log(`Receiver '${receiverName}' not found.`);
+      
       const id = uuid();
       queue.notifications[id] = senderName;
     }

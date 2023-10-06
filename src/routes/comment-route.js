@@ -32,7 +32,7 @@ async function addcomments(req, res) {
 async function deletecomments(req, res) {
   let id = parseInt(req.params.id);
   let commentData = await comment.get(id);
-  if (commentData.userId == req.user.id) {
+  if (commentData.userId == req.user.id || req.user.role == 'admin') {
     let commentRecord = await comment.delete(id);
     res.status(204).json(commentRecord);
   }
