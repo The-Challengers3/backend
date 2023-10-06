@@ -27,7 +27,7 @@ firebase.initializeApp(firebaseConfig);
 const storage = getStorage();
 const upload = multer({ storage: multer.memoryStorage() });
 
-reelRouter.get("/reels", bearerAuth, acl("readUser"), getAllReels);
+reelRouter.get("/reels",  getAllReels);
 reelRouter.delete("/reels/:id", bearerAuth, acl("deleteUser"), deleteReels);
 reelRouter.get(
   "/reelsRestaurant/:id",
@@ -100,7 +100,7 @@ reelRouter.post(
 async function deleteReels(req, res) {
   let id = parseInt(req.params.id);
   let reelsData = await reel.get(id);
-  if (reelsData.userId == req.user.id) {
+  if (reelsData.userId == req.user.id || req.user.role == 'admin') {
     let reelRecord = await reel.delete(id);
     res.status(204).json(reelRecord);
   }
