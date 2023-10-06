@@ -96,7 +96,7 @@ io.on("connection", (socket) => {
    
     console.log(queue.notifications)
     if (receiver) {
-      io.to(receiver.socketId).emit("getNotification", {
+      socket.to(receiver.socketId).emit("getNotification", {
         senderName,
         roomId,
       });
