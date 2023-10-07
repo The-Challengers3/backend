@@ -69,7 +69,7 @@ async function addbooking(req, res) {
 async function deletebooking(req, res) {
   let id = parseInt(req.params.id);
   let bookingData = await booking.get(id);
-  if (bookingData.userId == req.user.id || req.user.role == 'admin') {
+  if (bookingData.userId == req.user.id || req.user.role == "admin") {
     let bookingRecord = await booking.delete(id);
     res.status(204).json(bookingRecord);
   }
