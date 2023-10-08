@@ -6,6 +6,9 @@ const authRouter = express.Router();
 const { users } = require('../models/index');
 const basicAuth = require('./middleware/basic.js')
 
+const bearerAuth = require("../auth/middleware/bearer");
+const acl = require("../auth/middleware/acl");
+
 authRouter.post('/signup', async (req, res, next) => {
   try {
     let userRecord = await users.create(req.body);
@@ -27,4 +30,9 @@ authRouter.post('/signin', basicAuth, (req, res, next) => {
   res.status(200).json(req.user);
 });
 
+authRouter.get("/allusers",bearerAuth,acl("read"),getAllUsers);
+async function getAllUsers(req, res) {
+  const allusers = await users.findAll(); 
+  res.status(200).json(allusers);
+}
 module.exports = authRouter;

@@ -14,6 +14,12 @@ bookingRouter.get(
   getbookingRest
 );
 bookingRouter.get(
+  "/booking",
+  bearerAuth,
+  acl("read"),
+  getAllbookingRest
+);
+bookingRouter.get(
   "/bookingHotel/:id",
   bearerAuth,
   acl("readOwner"),
@@ -33,7 +39,10 @@ bookingRouter.delete(
   acl("deleteUser"),
   deletebooking
 );
-
+async function getAllbookingRest(req, res) {
+  const bookings = await booking.model.findAll(); 
+  res.status(200).json(bookings);
+}
 async function getbookingRest(req, res) {
   let id = parseInt(req.params.id);
   const bookings = await restaurant.readHasMany(id, booking.model);
