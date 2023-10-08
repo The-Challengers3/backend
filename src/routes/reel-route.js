@@ -86,7 +86,7 @@ reelRouter.post(
         .then(async (url) => {
           let reelData = req.body;
           reelData.url = url;
-          reelData.userId = req.user.id;
+          // reelData.userId = req.user.id;
           let reelRecord = await reel.create(reelData);
           res.status(201).json(reelRecord);
         })
