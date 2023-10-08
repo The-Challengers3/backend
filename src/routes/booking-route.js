@@ -14,6 +14,12 @@ bookingRouter.get(
   getbookingRest
 );
 bookingRouter.get(
+  "/booking",
+  bearerAuth,
+  acl("read"),
+  getAllbookingRest
+);
+bookingRouter.get(
   "/bookingHotel/:id",
   bearerAuth,
   acl("readOwner"),
@@ -33,7 +39,10 @@ bookingRouter.delete(
   acl("deleteUser"),
   deletebooking
 );
-
+async function getAllbookingRest(req, res) {
+  const bookings = await booking.model.findAll(); 
+  res.status(200).json(bookings);
+}
 async function getbookingRest(req, res) {
   let id = parseInt(req.params.id);
   const bookings = await restaurant.readHasMany(id, booking.model);
@@ -69,7 +78,7 @@ async function addbooking(req, res) {
 async function deletebooking(req, res) {
   let id = parseInt(req.params.id);
   let bookingData = await booking.get(id);
-  if (bookingData.userId == req.user.id || req.user.role == 'admin') {
+  if (bookingData.userId == req.user.id || req.user.role == "admin") {
     let bookingRecord = await booking.delete(id);
     res.status(204).json(bookingRecord);
   }
