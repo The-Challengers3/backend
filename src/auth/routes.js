@@ -41,7 +41,7 @@ authRouter.get("/oneuser/:id",bearerAuth,acl("readUser"),getOneUsers);
 async function getOneUsers(req, res) {
   let id = parseInt(req.params.id);
   const user = await users.findOne({ where: { id: id } }); 
-  res.status(200).json(user);
+  res.status(200).json({username:user.username,image:user.image});
 }
 
 module.exports = authRouter;

@@ -10,6 +10,7 @@ const userModel = (sequelize, DataTypes) => {
     username: { type: DataTypes.STRING, required: true, unique: true },
     password: { type: DataTypes.STRING, required: true },
     role: { type: DataTypes.ENUM('user', 'owner', 'admin'), required: true, defaultValue: 'user' },
+    // image:{ type: DataTypes.TEXT},
     token: {
       type: DataTypes.VIRTUAL,
       get() {
