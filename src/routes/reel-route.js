@@ -104,7 +104,7 @@ async function deleteReels(req, res) {
     let reelRecord = await reel.delete(id);
     res.status(204).json(reelRecord);
   }
-  res.json("you can't delete this reel");
+  // res.json("you can't delete this reel");
 }
 
 module.exports = reelRouter;

@@ -36,7 +36,7 @@ async function deletecomments(req, res) {
     let commentRecord = await comment.delete(id);
     res.status(204).json(commentRecord);
   }
-  res.json("you can't delete this comment");
+  // res.json("you can't delete this comment");
 }
 
 module.exports = commentRouter;

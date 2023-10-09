@@ -35,4 +35,5 @@ async function getAllUsers(req, res) {
   const allusers = await users.findAll(); 
   res.status(200).json(allusers);
 }
+
 module.exports = authRouter;
