@@ -35,4 +35,13 @@ async function getAllUsers(req, res) {
   const allusers = await users.findAll(); 
   res.status(200).json(allusers);
 }
+
+
+authRouter.get("/oneuser/:id",bearerAuth,acl("readUser"),getOneUsers);
+async function getOneUsers(req, res) {
+  let id = parseInt(req.params.id);
+  const user = await users.findOne({ where: { id: id } }); 
+  res.status(200).json(user);
+}
+
 module.exports = authRouter;
