@@ -62,7 +62,7 @@ let queue = {
 };
 let queue2 = {
   messages: {},
-  
+
 };
 
 const addNewUser = (username, socketId) => {
@@ -98,16 +98,16 @@ io.on("connection", (socket) => {
   socket.on("sendNotification", ({ senderName, receiverName, roomId }) => {
     const receiver = getUser(receiverName);
 
-   
+
     console.log(queue.notifications)
     if (receiver) {
-      io.to(receiver.socketId).emit("getNotification", {
+      socket.to(receiver.socketId).emit("getNotification", {
         senderName,
         roomId,
       });
     } else {
       console.log(`Receiver '${receiverName}' not found.`);
-      
+
       const id = uuid();
       queue.notifications[id] = senderName;
     }
