@@ -82,7 +82,7 @@ async function deletebooking(req, res) {
     let bookingRecord = await booking.delete(id);
     res.status(204).json(bookingRecord);
   }
-  res.json("you can't delete this booking");
+  // res.json("you can't delete this booking");
 }
 
 module.exports = bookingRouter;

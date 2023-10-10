@@ -64,7 +64,7 @@ async function updateactivity(req, res) {
     let activityRecord = await activity.update(id, activityData);
     res.status(201).json(activityRecord);
   }
-  res.json("you can't update this activity");
+  // res.json("you can't update this activity");
 }
 async function deleteactivity(req, res) {
   let id = parseInt(req.params.id);

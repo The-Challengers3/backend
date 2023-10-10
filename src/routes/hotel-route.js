@@ -43,7 +43,7 @@ async function updatehotel(req, res) {
     let hotelRecord = await hotel.update(id, hotelData);
     res.status(201).json(hotelRecord);
   }
-  res.json("you can't update this hotel");
+  // res.json("you can't update this hotel");
 }
 async function deletehotel(req, res) {
   let id = parseInt(req.params.id);
