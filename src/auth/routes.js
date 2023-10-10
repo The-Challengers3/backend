@@ -30,10 +30,18 @@ authRouter.post('/signin', basicAuth, (req, res, next) => {
   res.status(200).json(req.user);
 });
 
-authRouter.get("/allusers",bearerAuth,acl("read"),getAllUsers);
+authRouter.get("/allusers", bearerAuth, acl("read"), getAllUsers);
 async function getAllUsers(req, res) {
-  const allusers = await users.findAll(); 
+  const allusers = await users.findAll();
   res.status(200).json(allusers);
+}
+
+
+authRouter.get("/oneuser/:id", bearerAuth, acl("readUser"), getOneUsers);
+async function getOneUsers(req, res) {
+  let id = parseInt(req.params.id);
+  const user = await users.findOne({ where: { id: id } });
+  res.status(200).json({ username: user.username, image: user.image });
 }
 
 module.exports = authRouter;

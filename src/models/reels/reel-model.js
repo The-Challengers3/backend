@@ -10,6 +10,6 @@ const reelModel = (sequelize, DataTypes) =>
     hotelId: { type: DataTypes.INTEGER },
     activityId: { type: DataTypes.INTEGER },
     userId: { type: DataTypes.INTEGER },
-
+    category:{type:DataTypes.STRING}
   });
 module.exports = reelModel;
