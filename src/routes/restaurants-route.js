@@ -18,8 +18,8 @@ restRouter.get(
 );
 restRouter.post(
   "/restaurants",
-  // bearerAuth,
-  // acl("createOwner"),
+  bearerAuth,
+  acl("createOwner"),
   createrestaurant
 );
 restRouter.put(
@@ -59,7 +59,7 @@ async function updaterestaurant(req, res) {
     let restaurantRecord = await restaurant.update(id, restaurantData);
     res.status(201).json(restaurantRecord);
   }
-  res.json("you can't update this restaurant");
+  // res.json("you can't update this restaurant");
 }
 async function deleterestaurant(req, res) {
   let id = parseInt(req.params.id);
