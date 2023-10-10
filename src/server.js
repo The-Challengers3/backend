@@ -131,10 +131,10 @@ io.on("connection", (socket) => {
     console.log("msgQueue v2", queue.notifications);
   });
 
-  // socket.on("disconnect", () => {
-  //   removeUser(socket.id);
-  //   console.log("disconnect");
-  // });
+  socket.on("disconnect", () => {
+    removeUser(socket.id);
+    console.log("disconnect");
+  });
 });
 
 module.exports = {
